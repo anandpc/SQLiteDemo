@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String DB_NAME = "data";
+    private static final String DB_NAME = "data.db";
     private static final String DATA_LIST = "data";
 
     Button save,view,update,delete;
@@ -51,16 +51,36 @@ public class MainActivity extends AppCompatActivity {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewData();
+                updateData();
             }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                deleteData();
             }
         });
+    }
+
+    private void deleteData() {
+
+       int isDeleted =  dbHelper.delete(roll.getText().toString(),name.getText().toString());
+
+        if(isDeleted != 0 ){
+            Toast.makeText(this,"Data Deleted",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this,"Data not Deleted",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateData() {
+        int isUpdate = dbHelper.update(roll.getText().toString(),name.getText().toString());
+        if(isUpdate != 0 ){
+            Toast.makeText(this,"Data Updated",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this,"Data not Updated",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void viewData() {
@@ -70,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = dbHelper.view();
         while (cursor.moveToNext()){
-            String res = cursor.getString(1)+" : "+cursor.getString(2);
+            String res = cursor.getString(0)+" : "+cursor.getString(1);
             data.add(res);
         }
         intent.putStringArrayListExtra(DATA_LIST,data);
